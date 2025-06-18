@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const TeaController = require('./TeaController');
+const userController = require('./userController');
 
 const app = express();
 const PORT = 3000;
@@ -41,9 +42,18 @@ app.get('/api/teas', TeaController.getTeas, (req, res) => {
 
 // CONTROLLERS
 
+//create a user
+app.post('/api/signup', userController.createUser, (req, res) => {
+  res.status(200).json(res.locals.user);
+});
+
+//find a user and check their password
+app.post('/api/login', userController.getUser, (req, res) => {
+  res.status(200).json(res.locals.user);
+});
+
 //CREATE A TEA
 app.post('/api/teas', TeaController.createTea);
-
 
 //DELETE A TEA
 app.delete('/api/teas/:id', TeaController.deleteTea);
@@ -60,3 +70,9 @@ app.use((err, req, res, next) => {
   console.log(errorObj.log);
   return res.status(errorObj.status).json(errorObj.message);
 });
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}...`);
+});
+
+module.exports = app;
